@@ -18,7 +18,6 @@ public class Command<C> {
         this.name = name;
     }
 
-
     public Command<C> argument(Argument<C, ?> arg) {
         arguments.add(arg);
         if (!arg.allowAsync()) {
@@ -98,6 +97,9 @@ public class Command<C> {
             executor.execute(ctx, argumentMap);
     }
 
+    public @Nullable CompiledCommand<C> compile(String src) throws CommandMsgError {
+        return compile(new CommandReader(src));
+    }
     public @Nullable CompiledCommand<C> compile(CommandReader reader) throws CommandMsgError {
         if (reader.hasNext()) {
             int idx = reader.ridx();

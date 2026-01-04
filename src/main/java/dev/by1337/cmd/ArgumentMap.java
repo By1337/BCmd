@@ -1,5 +1,8 @@
 package dev.by1337.cmd;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class ArgumentMap {
     private String[] keys;
     private Object[] values;
@@ -101,5 +104,15 @@ public class ArgumentMap {
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ArgumentMap that = (ArgumentMap) o;
+        return size == that.size && Objects.deepEquals(keys, that.keys) && Objects.deepEquals(values, that.values);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(keys), Arrays.hashCode(values), size);
+    }
 }
