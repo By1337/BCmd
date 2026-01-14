@@ -3,6 +3,7 @@ package dev.by1337.cmd;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class Command<C> {
     private final String name;
@@ -128,7 +129,7 @@ public class Command<C> {
                 }
             }
         }
-        return new CompiledCommand<>(argumentMap, executor);
+        return new CompiledCommand<>(argumentMap, executor, reader.src());
     }
 
     public @Nullable SuggestionsList suggest(C ctx, String input) {
@@ -148,8 +149,11 @@ public class Command<C> {
         }
 
         SuggestionsList suggestions = new SuggestionsList(30, reader.src(), Math.min(reader.ridx(), reader.length()));
+        String remaining = suggestions.getRemaining();
         for (String sub : subCommands.keySet()) {
-            suggestions.suggest(sub);
+            if (remaining.isBlank() || sub.startsWith(remaining)){
+                suggestions.suggest(sub);
+            }
         }
         int i = arguments.size();
         ArgumentMap argumentMap = new ArgumentMap(i);

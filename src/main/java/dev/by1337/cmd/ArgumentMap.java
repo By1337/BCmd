@@ -13,6 +13,14 @@ public class ArgumentMap {
         values = new Object[capacity];
     }
 
+    public String[] keys() {
+        return keys;
+    }
+
+    public Object[] values() {
+        return values;
+    }
+
     public Object put(String key, Object value) {
         for (int i = 0; i < size; i++) {
             if (keys[i].equals(key)) {

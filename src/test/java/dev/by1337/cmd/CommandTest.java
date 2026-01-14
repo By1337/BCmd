@@ -21,7 +21,14 @@ class CommandTest {
                             assertEquals(args, ref.expected);
                             ref.runed = true;
                         })
-                );
+                )
+                .sub(new Command<Void>("test2")
+                        .sub(new Command<Void>("test3")
+
+                        )
+                )
+                ;
+        command.suggest(null, "test2 te");
         var v = command.compile("test \"12  3\" '555 555'");
         assertNotNull(v);
         ref.expected = v.getArgs();

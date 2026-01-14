@@ -57,4 +57,20 @@ public class SuggestionsList {
         if (count == 0) return List.of();
         return List.of(Arrays.copyOfRange(suggestions, 0, count));
     }
+
+    public int getCount() {
+        return count;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public String getRemaining() {
+        return remaining;
+    }
+
+    public String getSource() {
+        return source;
+    }
 }
