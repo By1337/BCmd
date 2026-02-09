@@ -1,6 +1,8 @@
 package dev.by1337.cmd;
 
 
+import java.util.function.Function;
+
 public class CompiledCommand<C> {
     private final ArgumentMap args;
     private final CommandExecutor<C> executor;
@@ -26,6 +28,10 @@ public class CompiledCommand<C> {
 
     public String getSource() {
         return source;
+    }
+
+    public <R> CompiledCommand<R> map(Function<R, C> mapper) {
+        return new CompiledCommand<>(args, executor.map(mapper), source);
     }
 
     @Override

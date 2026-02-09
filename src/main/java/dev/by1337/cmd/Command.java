@@ -1,5 +1,6 @@
 package dev.by1337.cmd;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -11,7 +12,7 @@ public class Command<C> {
     private final Map<String, Command<C>> subCommands = new HashMap<>();
     private final List<Requires<C>> requires = new ArrayList<>();
     private final List<Argument<C, ?>> arguments = new ArrayList<>();
-    private CommandExecutor<C> executor;
+    private @Nullable CommandExecutor<C> executor;
     private boolean allowAsync = true;
 
 
@@ -28,11 +29,11 @@ public class Command<C> {
     }
 
     public Command<C> sub(Command<C> c) {
-        subCommands.put(c.name, c);
+        subCommands.put(c.name(), c);
         if (!c.allowAsync()) {
             allowAsync = false;
         }
-        c.aliases.forEach(a -> subCommands.put(a, c));
+        c.aliases().forEach(a -> subCommands.put(a, c));
         return this;
     }
 
@@ -40,10 +41,12 @@ public class Command<C> {
         this.executor = executor;
         return this;
     }
+
     public Command<C> alias(String alias) {
         aliases.add(alias);
         return this;
     }
+
     public Command<C> aliases(String... aliases) {
         Collections.addAll(this.aliases, aliases);
         return this;
@@ -61,7 +64,7 @@ public class Command<C> {
 
     public void execute(C ctx, CommandReader reader) throws CommandMsgError {
         for (Requires<C> require : requires) {
-            if (!require.test(ctx)){
+            if (!require.test(ctx)) {
                 return;
             }
         }
@@ -81,7 +84,7 @@ public class Command<C> {
         if (reader.hasNext()) {
             for (int arg = 0; arg < i; arg++) {
                 Argument<C, ?> argument = arguments.get(arg);
-                if (!argument.requires(ctx)){
+                if (!argument.requires(ctx)) {
                     break;
                 }
                 argument.parse(ctx, reader, argumentMap);
@@ -101,6 +104,7 @@ public class Command<C> {
     public @Nullable CompiledCommand<C> compile(String src) throws CommandMsgError {
         return compile(new CommandReader(src));
     }
+
     public @Nullable CompiledCommand<C> compile(CommandReader reader) throws CommandMsgError {
         if (reader.hasNext()) {
             int idx = reader.ridx();
@@ -151,14 +155,14 @@ public class Command<C> {
         SuggestionsList suggestions = new SuggestionsList(30, reader.src(), Math.min(reader.ridx(), reader.length()));
         String remaining = suggestions.getRemaining();
         for (String sub : subCommands.keySet()) {
-            if (remaining.isBlank() || sub.startsWith(remaining)){
+            if (remaining.isBlank() || sub.startsWith(remaining)) {
                 suggestions.suggest(sub);
             }
         }
         int i = arguments.size();
         ArgumentMap argumentMap = new ArgumentMap(i);
         for (Argument<C, ?> argument : arguments) {
-            if (!argument.requires(ctx)){
+            if (!argument.requires(ctx)) {
                 break;
             }
             try {
@@ -198,5 +202,47 @@ public class Command<C> {
 
     public Set<String> aliases() {
         return aliases;
+    }
+
+    @Contract(pure = true, value = "_ -> new")
+    public <R> Command<R> map(Function<R, C> mapper) {
+        Command<R> result = new Command<>(name);
+        result.aliases.addAll(aliases);
+        subCommands.forEach((k, s) -> result.subCommands.put(k, s.map(mapper)));
+        requires.forEach(r -> result.requires.add(r.map(mapper)));
+        arguments.forEach(a -> result.arguments.add(a.map(mapper)));
+        result.executor = executor != null ? executor.map(mapper) : null;
+        result.allowAsync = allowAsync;
+        return result;
+    }
+
+    @Contract(pure = true, value = " -> new")
+    public Command<C> copy() {
+        Command<C> result = new Command<>(name);
+        result.aliases.addAll(aliases);
+        result.subCommands.putAll(subCommands);
+        result.requires.addAll(requires);
+        result.arguments.addAll(arguments);
+        result.executor = executor;
+        result.allowAsync = allowAsync;
+        return result;
+    }
+
+    @Contract(pure = true, value = "_ -> new")
+    public Command<C> and(Command<C> o) {
+        Command<C> result = copy();
+        result.aliases.addAll(o.aliases);
+        result.subCommands.putAll(o.subCommands);
+        result.requires.addAll(o.requires);
+        if (result.executor == null) {
+            //overlap
+            result.arguments.clear();
+            result.arguments.addAll(o.arguments);
+            result.executor = o.executor;
+        }
+        if (result.allowAsync) {
+            result.allowAsync = o.allowAsync;
+        }
+        return result;
     }
 }

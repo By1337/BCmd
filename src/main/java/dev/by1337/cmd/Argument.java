@@ -2,6 +2,7 @@ package dev.by1337.cmd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class Argument<C, T> {
     protected final String name;
@@ -42,5 +43,28 @@ public abstract class Argument<C, T> {
 
     public String name() {
         return name;
+    }
+
+    public <R> Argument<R, T> map(Function<R, C> mapper) {
+        final Argument<C, T> self = this;
+        return new Argument<>(name) {
+            @Override
+            public void parse(R ctx, CommandReader reader, ArgumentMap out) throws CommandMsgError {
+                if (ctx == null) {
+                    self.parse(null, reader, out);
+                } else {
+                    self.parse(mapper.apply(ctx), reader, out);
+                }
+            }
+
+            @Override
+            public void suggest(R ctx, CommandReader reader, SuggestionsList suggestions, ArgumentMap args) throws CommandMsgError {
+                if (ctx == null) {
+                    self.suggest(null, reader, suggestions, args);
+                } else {
+                    self.suggest(mapper.apply(ctx), reader, suggestions, args);
+                }
+            }
+        };
     }
 }
