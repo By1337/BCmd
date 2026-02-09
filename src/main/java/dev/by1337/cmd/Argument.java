@@ -48,6 +48,7 @@ public abstract class Argument<C, T> {
     public <R> Argument<R, T> map(Function<R, C> mapper) {
         final Argument<C, T> self = this;
         return new Argument<>(name) {
+            private final List<Requires<R>> requires = new ArrayList<>();
             @Override
             public void parse(R ctx, CommandReader reader, ArgumentMap out) throws CommandMsgError {
                 if (ctx == null) {
@@ -64,6 +65,30 @@ public abstract class Argument<C, T> {
                 } else {
                     self.suggest(mapper.apply(ctx), reader, suggestions, args);
                 }
+            }
+
+            @Override
+            public boolean compilable() {
+                return self.compilable();
+            }
+
+            @Override
+            public boolean allowAsync() {
+                return self.allowAsync();
+            }
+
+            public void requires(Requires<R> r) {
+                requires.add(r);
+            }
+
+            @Override
+            public boolean requires(R ctx) {
+                for (Requires<R> r : requires) {
+                    if (!r.test(ctx)) {
+                        return false;
+                    }
+                }
+                return self.requires(mapper.apply(ctx));
             }
         };
     }
