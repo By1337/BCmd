@@ -3,6 +3,8 @@ package dev.by1337.cmd;
 import dev.by1337.cmd.argument.ArgumentString;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommandTest {
@@ -28,6 +30,7 @@ class CommandTest {
                         )
                 )
                 ;
+        assertEquals(List.of(), command.suggest(null, "test2").toList());
         command.suggest(null, "test2 te");
         var v = command.compile("test \"12  3\" '555 555'");
         assertNotNull(v);

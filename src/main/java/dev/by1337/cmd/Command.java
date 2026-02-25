@@ -145,8 +145,7 @@ public class Command<C> {
             int idx = reader.ridx();
             String s = reader.readString();
             Command<C> sub = subCommands.get(s);
-            if (sub != null) {
-                reader.skip();
+            if (sub != null && reader.next() == ' ') {
                 return sub.suggest(ctx, reader);
             }
             reader.ridx(idx);
