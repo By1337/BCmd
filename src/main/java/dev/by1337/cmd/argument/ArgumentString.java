@@ -10,6 +10,7 @@ public class ArgumentString<C> extends Argument<C, String> {
         super(name);
         suggest = null;
     }
+
     public ArgumentString(String name, String suggest) {
         super(name);
         this.suggest = suggest;
@@ -17,17 +18,19 @@ public class ArgumentString<C> extends Argument<C, String> {
 
     @Override
     public void parse(C ctx, CommandReader reader, ArgumentMap out) throws CommandMsgError {
-        out.put(name, reader.readString());
+        var s = reader.readString();
+        if (s.isEmpty()) return;
+        out.put(name, s);
     }
 
     @Override
     public void suggest(C ctx, CommandReader reader, SuggestionsList suggestions, ArgumentMap args) throws CommandMsgError {
         String s = reader.readString();
+        if (s.isEmpty()) return;
         if (suggest != null) {
             suggestions.suggest(suggest);
-        }else {
-            suggestions.suggest(s);
         }
+        suggestions.suggest(s);
     }
 
     @Override

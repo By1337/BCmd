@@ -1,6 +1,7 @@
 package dev.by1337.cmd;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -57,15 +58,12 @@ public class Command<C> {
         return this;
     }
 
-
-    public void execute(C ctx, String input) throws CommandMsgError {
-        execute(ctx, new CommandReader(input));
-    }
-
-    public void execute(C ctx, CommandReader reader) throws CommandMsgError {
-        for (Requires<C> require : requires) {
-            if (!require.test(ctx)) {
-                return;
+    private Object process(C ctx, CommandReader reader, Mode mode) throws CommandMsgError {
+        if (mode == Mode.EXECUTE) {
+            for (Requires<C> require : requires) {
+                if (!require.test(ctx)) {
+                    return null;
+                }
             }
         }
         if (reader.hasNext()) {
@@ -74,31 +72,41 @@ public class Command<C> {
             Command<C> sub = subCommands.get(s);
             if (sub != null) {
                 reader.skip();
-                sub.execute(ctx, reader);
-                return;
+                return sub.process(ctx, reader, mode);
             }
             reader.ridx(idx);
         }
         int i = arguments.size();
         ArgumentMap argumentMap = new ArgumentMap(i);
-        if (reader.hasNext()) {
-            for (int arg = 0; arg < i; arg++) {
-                Argument<C, ?> argument = arguments.get(arg);
-                if (!argument.requires(ctx)) {
-                    break;
-                }
+        for (Argument<C, ?> argument : arguments) {
+            if (mode == Mode.COMPILE) {
+                if (!argument.compilable()) return null;
+                argument.compile(reader, argumentMap);
+            } else {
+                if (!argument.requires(ctx)) break;
                 argument.parse(ctx, reader, argumentMap);
-                char next = reader.next();
-                if (next == '\0') {
-                    break;
-                }
-                if (next != ' ') {
-                    throw new IllegalStateException("Argument " + argument + " не дочитал? " + reader.report());
-                }
+            }
+            char next = reader.next();
+            if (next != '\0' && next != ' ') {
+                throw new IllegalStateException("Argument " + argument + " не дочитал? " + reader.report());
             }
         }
-        if (executor != null)
-            executor.execute(ctx, argumentMap);
+        if (mode == Mode.EXECUTE) {
+            if (executor != null)
+                executor.execute(ctx, argumentMap);
+            return null;
+        } else {
+            if (executor == null) throw new CommandMsgError("No command executor defined");
+            return new CompiledCommand<>(argumentMap, executor, reader.src());
+        }
+    }
+
+    public void execute(C ctx, String input) throws CommandMsgError {
+        execute(ctx, new CommandReader(input));
+    }
+
+    public void execute(@Nullable C ctx, CommandReader reader) throws CommandMsgError {
+        process(ctx, reader, Mode.EXECUTE);
     }
 
     public @Nullable CompiledCommand<C> compile(String src) throws CommandMsgError {
@@ -106,41 +114,19 @@ public class Command<C> {
     }
 
     public @Nullable CompiledCommand<C> compile(CommandReader reader) throws CommandMsgError {
-        if (reader.hasNext()) {
-            int idx = reader.ridx();
-            String s = reader.readString();
-            Command<C> sub = subCommands.get(s);
-            if (sub != null) {
-                reader.skip();
-                return sub.compile(reader);
-            }
-            reader.ridx(idx);
-        }
-        if (executor == null) throw new CommandMsgError("No command executor defined");
-        int i = arguments.size();
-        ArgumentMap argumentMap = new ArgumentMap(i);
-        if (reader.hasNext()) {
-            for (int arg = 0; arg < i; arg++) {
-                Argument<C, ?> argument = arguments.get(arg);
-                if (!argument.compilable()) return null;
-                argument.compile(reader, argumentMap);
-                char next = reader.next();
-                if (next == '\0') {
-                    break;
-                }
-                if (next != ' ') {
-                    throw new IllegalStateException("Argument " + argument + " не дочитал? " + reader.report());
-                }
-            }
-        }
-        return new CompiledCommand<>(argumentMap, executor, reader.src());
+        //noinspection unchecked
+        return (CompiledCommand<C>) process(null, reader, Mode.COMPILE);
     }
+
 
     public @Nullable SuggestionsList suggest(C ctx, String input) {
         return suggest(ctx, new CommandReader(input));
     }
 
     public SuggestionsList suggest(C ctx, CommandReader reader) throws CommandMsgError {
+        if (!testRequires(ctx)) {
+            return new SuggestionsList(30, reader.src(), 0);
+        }
         if (reader.hasNext()) {
             int idx = reader.ridx();
             String s = reader.readString();
@@ -153,9 +139,9 @@ public class Command<C> {
 
         SuggestionsList suggestions = new SuggestionsList(30, reader.src(), Math.min(reader.ridx(), reader.length()));
         String remaining = suggestions.getRemaining();
-        for (String sub : subCommands.keySet()) {
-            if (remaining.isBlank() || sub.startsWith(remaining)) {
-                suggestions.suggest(sub);
+        for (var e : subCommands.entrySet()) {
+            if (e.getValue().testRequires(ctx) && (remaining.isBlank() || e.getKey().startsWith(remaining))) {
+                suggestions.suggest(e.getKey());
             }
         }
         int i = arguments.size();
@@ -181,6 +167,15 @@ public class Command<C> {
             suggestions.setStart(Math.min(reader.ridx(), reader.length()));
         }
         return suggestions;
+    }
+
+    private boolean testRequires(@NotNull C ctx) {
+        for (Requires<C> require : requires) {
+            if (!require.test(ctx)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String name() {
@@ -243,5 +238,10 @@ public class Command<C> {
             result.allowAsync = o.allowAsync;
         }
         return result;
+    }
+
+    private enum Mode {
+        EXECUTE,
+        COMPILE
     }
 }
