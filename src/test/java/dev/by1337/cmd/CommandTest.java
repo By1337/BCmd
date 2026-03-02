@@ -15,29 +15,37 @@ class CommandTest {
             ArgumentMap expected = null;
             boolean runed;
         };
-        Command<Void> command = new Command<Void>("root")
-                .sub(new Command<Void>("test")
+        Command<Object> command = new Command<Object>("root")
+                .sub(new Command<Object>("test")
                         .argument(new ArgumentString<>("s"))
                         .argument(new ArgumentString<>("s1"))
                         .executor((v, args) -> {
-                            assertEquals(args, ref.expected);
+                            assertEquals(ref.expected, args);
                             ref.runed = true;
                         })
                 )
-                .sub(new Command<Void>("test2")
-                        .sub(new Command<Void>("test3")
+                .sub(new Command<Object>("test2")
+                        .sub(new Command<Object>("test3")
 
                         )
                 )
-                ;
-        assertEquals(List.of(), command.suggest(null, "test2").toList());
-        command.suggest(null, "test2 te");
+                .sub(new Command<Object>("flatTest").executor(
+                        new ArgumentString<>("test"),
+                        new ArgumentString<>("test2"),
+                        (sender, test, test2) -> {
+                            System.out.println(test);
+                            System.out.println(test2);
+                        })
+                );
+        assertEquals(List.of(), command.suggest(new Object(), "test2").toList());
+        command.suggest(new Object(), "test2 te");
         var v = command.compile("test \"12  3\" '555 555'");
         assertNotNull(v);
         ref.expected = v.getArgs();
         assertEquals("12  3", ref.expected.get("s"));
         assertEquals("555 555", ref.expected.get("s1"));
-        command.execute(null, "test \"12  3\" '555 555'");
+        command.execute(new Object(), "test \"12  3\" '555 555'");
+        command.execute(new Object(), "flatTest '555 555' '344 555'");
         assertTrue(ref.runed);
     }
 }

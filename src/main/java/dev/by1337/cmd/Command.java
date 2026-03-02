@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-public class Command<C> {
+public class Command<C> implements TypedExecutorDsl<C> {
     private final String name;
     private final Set<String> aliases = new HashSet<>();
     private final Map<String, Command<C>> subCommands = new HashMap<>();
@@ -243,5 +243,10 @@ public class Command<C> {
     private enum Mode {
         EXECUTE,
         COMPILE
+    }
+
+    @Override
+    public Command<C> self() {
+        return this;
     }
 }
