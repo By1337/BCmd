@@ -1,8 +1,12 @@
 package dev.by1337.cmd;
 
 public interface TypedExecutorDsl<C> {
-    
+
     Command<C> self();
+
+    default Command<C> executor(Function1<C> runner) {
+        return self().executor((c, map) -> runner.apply(c));
+    }
 
     @SuppressWarnings("unchecked")
     default <A1> Command<C> executor(
@@ -11,12 +15,10 @@ public interface TypedExecutorDsl<C> {
     ) {
         self().argument(a1);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name)
+        ));
     }
 
 
@@ -28,13 +30,11 @@ public interface TypedExecutorDsl<C> {
         self().argument(a1);
         self().argument(a2);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name)
+        ));
     }
 
 
@@ -47,14 +47,12 @@ public interface TypedExecutorDsl<C> {
         self().argument(a2);
         self().argument(a3);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name)
+        ));
     }
 
 
@@ -68,15 +66,13 @@ public interface TypedExecutorDsl<C> {
         self().argument(a3);
         self().argument(a4);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name)
+        ));
     }
 
 
@@ -91,16 +87,14 @@ public interface TypedExecutorDsl<C> {
         self().argument(a4);
         self().argument(a5);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name)
+        ));
     }
 
 
@@ -116,17 +110,15 @@ public interface TypedExecutorDsl<C> {
         self().argument(a5);
         self().argument(a6);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name)
+        ));
     }
 
 
@@ -143,18 +135,16 @@ public interface TypedExecutorDsl<C> {
         self().argument(a6);
         self().argument(a7);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name)
+        ));
     }
 
 
@@ -172,19 +162,17 @@ public interface TypedExecutorDsl<C> {
         self().argument(a7);
         self().argument(a8);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name)
+        ));
     }
 
 
@@ -203,20 +191,18 @@ public interface TypedExecutorDsl<C> {
         self().argument(a8);
         self().argument(a9);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name)
+        ));
     }
 
 
@@ -236,21 +222,19 @@ public interface TypedExecutorDsl<C> {
         self().argument(a9);
         self().argument(a10);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name)
+        ));
     }
 
 
@@ -271,22 +255,20 @@ public interface TypedExecutorDsl<C> {
         self().argument(a10);
         self().argument(a11);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name)
+        ));
     }
 
 
@@ -308,23 +290,21 @@ public interface TypedExecutorDsl<C> {
         self().argument(a11);
         self().argument(a12);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name)
+        ));
     }
 
 
@@ -347,24 +327,22 @@ public interface TypedExecutorDsl<C> {
         self().argument(a12);
         self().argument(a13);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name)
+        ));
     }
 
 
@@ -388,25 +366,23 @@ public interface TypedExecutorDsl<C> {
         self().argument(a13);
         self().argument(a14);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name)
+        ));
     }
 
 
@@ -431,26 +407,24 @@ public interface TypedExecutorDsl<C> {
         self().argument(a14);
         self().argument(a15);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name),
-                    (A15) map.get(a15.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name),
+                (A15) map.get(a15.name)
+        ));
     }
 
 
@@ -476,27 +450,25 @@ public interface TypedExecutorDsl<C> {
         self().argument(a15);
         self().argument(a16);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name),
-                    (A15) map.get(a15.name),
-                    (A16) map.get(a16.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name),
+                (A15) map.get(a15.name),
+                (A16) map.get(a16.name)
+        ));
     }
 
 
@@ -523,28 +495,26 @@ public interface TypedExecutorDsl<C> {
         self().argument(a16);
         self().argument(a17);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name),
-                    (A15) map.get(a15.name),
-                    (A16) map.get(a16.name),
-                    (A17) map.get(a17.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name),
+                (A15) map.get(a15.name),
+                (A16) map.get(a16.name),
+                (A17) map.get(a17.name)
+        ));
     }
 
 
@@ -572,29 +542,27 @@ public interface TypedExecutorDsl<C> {
         self().argument(a17);
         self().argument(a18);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name),
-                    (A15) map.get(a15.name),
-                    (A16) map.get(a16.name),
-                    (A17) map.get(a17.name),
-                    (A18) map.get(a18.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name),
+                (A15) map.get(a15.name),
+                (A16) map.get(a16.name),
+                (A17) map.get(a17.name),
+                (A18) map.get(a18.name)
+        ));
     }
 
 
@@ -623,30 +591,28 @@ public interface TypedExecutorDsl<C> {
         self().argument(a18);
         self().argument(a19);
 
-        return self().executor((c, map) -> {
-            runner.apply(
-                    c,
-                    (A1) map.get(a1.name),
-                    (A2) map.get(a2.name),
-                    (A3) map.get(a3.name),
-                    (A4) map.get(a4.name),
-                    (A5) map.get(a5.name),
-                    (A6) map.get(a6.name),
-                    (A7) map.get(a7.name),
-                    (A8) map.get(a8.name),
-                    (A9) map.get(a9.name),
-                    (A10) map.get(a10.name),
-                    (A11) map.get(a11.name),
-                    (A12) map.get(a12.name),
-                    (A13) map.get(a13.name),
-                    (A14) map.get(a14.name),
-                    (A15) map.get(a15.name),
-                    (A16) map.get(a16.name),
-                    (A17) map.get(a17.name),
-                    (A18) map.get(a18.name),
-                    (A19) map.get(a19.name)
-            );
-        });
+        return self().executor((c, map) -> runner.apply(
+                c,
+                (A1) map.get(a1.name),
+                (A2) map.get(a2.name),
+                (A3) map.get(a3.name),
+                (A4) map.get(a4.name),
+                (A5) map.get(a5.name),
+                (A6) map.get(a6.name),
+                (A7) map.get(a7.name),
+                (A8) map.get(a8.name),
+                (A9) map.get(a9.name),
+                (A10) map.get(a10.name),
+                (A11) map.get(a11.name),
+                (A12) map.get(a12.name),
+                (A13) map.get(a13.name),
+                (A14) map.get(a14.name),
+                (A15) map.get(a15.name),
+                (A16) map.get(a16.name),
+                (A17) map.get(a17.name),
+                (A18) map.get(a18.name),
+                (A19) map.get(a19.name)
+        ));
     }
 
     public interface Function1<F0> {

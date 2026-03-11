@@ -33,6 +33,7 @@ public abstract class Argument<C, T> {
     }
 
     public boolean requires(C ctx) {
+        if (requires.isEmpty()) return true;
         for (Requires<C> r : requires) {
             if (!r.test(ctx)) {
                 return false;

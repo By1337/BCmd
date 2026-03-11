@@ -169,7 +169,7 @@ public class Command<C> implements TypedExecutorDsl<C> {
         return suggestions;
     }
 
-    private boolean testRequires(@NotNull C ctx) {
+    private boolean testRequires(C ctx) {
         for (Requires<C> require : requires) {
             if (!require.test(ctx)) {
                 return false;
