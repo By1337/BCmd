@@ -1,7 +1,6 @@
 package dev.by1337.cmd;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -248,5 +247,17 @@ public class Command<C> implements TypedExecutorDsl<C> {
     @Override
     public Command<C> self() {
         return this;
+    }
+
+    public Map<String, Command<C>> getSubCommands() {
+        return subCommands;
+    }
+
+    public List<Requires<C>> getRequires() {
+        return requires;
+    }
+
+    public @Nullable CommandExecutor<C> getExecutor() {
+        return executor;
     }
 }

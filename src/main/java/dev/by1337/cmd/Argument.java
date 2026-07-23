@@ -42,6 +42,10 @@ public abstract class Argument<C, T> {
         return true;
     }
 
+    public List<Requires<C>> getRequires() {
+        return requires;
+    }
+
     public String name() {
         return name;
     }
