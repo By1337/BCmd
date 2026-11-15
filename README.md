@@ -9,6 +9,6 @@
 <dependency>
     <groupId>dev.by1337.cmd</groupId>
     <artifactId>BCmd</artifactId>
-    <version>1.1</version>
+    <version>1.4.1</version>
 </dependency>
 ```

@@ -17,7 +17,7 @@ public class ArgumentCommand<C> extends Argument<C, ArgumentCommand.RunnableComm
     public void compile(CommandReader reader, ArgumentMap out) throws CommandMsgError {
         String src = readFull(reader);
         CompiledCommand<C> c = commandSupplier.get().compile(new CommandReader(src));
-        if (c == null){
+        if (c == null) {
             throw new IllegalStateException("Failed to compile command " + src + " full: " + reader.src());
         }
         out.put(name, (RunnableCommand<C>) (ctx, m) -> c.execute(ctx));
@@ -44,6 +44,8 @@ public class ArgumentCommand<C> extends Argument<C, ArgumentCommand.RunnableComm
         SuggestionsList result = commandSupplier.get().suggest(ctx, reader);
         suggestions.setStart(result.start());
         result.forEach(suggestions::suggest);
+        // This argument owns the entire remaining input, including partial subcommands.
+        reader.ridx(reader.length());
     }
 
     public interface RunnableCommand<C> {
